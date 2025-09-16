@@ -15,15 +15,7 @@ if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export RUN="enkfrrfs"
 fi
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-if [ "${CYCLE_TYPE}" == "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
-else
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
-  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
-fi
-  
-export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}
+
 #-----------------------------------------------------------------------
 # Define data directories
 #-----------------------------------------------------------------------
@@ -31,6 +23,23 @@ export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
 cd ${DATA}
 
+#-----------------------------------------------------------------------
+# Set PDY; define and make COMOUT and umbrella directories
+#------------------------i----------------------------------------------
+export cycle="t${cyc}z"
+setpdy.sh
+. ./PDY
+export CDATE="${PDY}${cyc}"
+
+if [ "${CYCLE_TYPE}" == "spinup" ]; then
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver}/${WGF}
+else
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+  export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver}/${WGF}
+fi
+
+export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}
 #-----------------------------------------------------------------------
 # Source the variable definitions file
 #-----------------------------------------------------------------------
