@@ -9,6 +9,8 @@ set -xue
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
 export outid=${outid:-"LL$job"}
+export RUN=${RUN:-rrfs}
+
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   DO_ENSEMBLE="TRUE"
@@ -90,9 +92,6 @@ on the RRFS initial conditions.
 #-----------------------------------------------------------------------
 # RRFS Blending
 #-----------------------------------------------------------------------
-export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
-export RUN=${RUN:-rrfs}
 
 if [ $WGF = "enkf" ] && [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
@@ -102,9 +101,6 @@ else
   echo "Blending can only run with enkf"
   exit 1
 fi
-
-export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/${RUN}_ics_${cyc}_${rrfs_ver}/${WGF}/${mem_num}}
-export shared_output_data=${umbrella_ics_data}/ics
 
 #-----------------------------------------------------------------------
 # Define COM directories
